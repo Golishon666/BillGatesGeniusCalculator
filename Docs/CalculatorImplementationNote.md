@@ -26,6 +26,8 @@ On success the presenter inserts a newest-first history entry like `5+5=10`, cle
 
 On error the presenter inserts `expression=ERROR`, clears input, shows the message box with `Please check the expression you just entered`, then restores the failed expression after `GOT IT`.
 
+Debug: `Space` clears the full history when the input field is not focused (`ClearHistoryDebug` on the presenter).
+
 ## Prefabs
 
 All UI is prefab-backed:
@@ -37,16 +39,15 @@ All UI is prefab-backed:
 
 Runtime UI does not generate calculator controls. It only updates prefab-owned components and toggles the history scroll area when entries exist.
 
-Reference empty-state geometry is tuned for the 1080x1920 portrait target. The screen does not use Unity layout components; `CalculatorScreenView` updates prefab-owned `RectTransform`s directly.
+Reference empty-state geometry is authored in `CalculatorScreen.prefab` for the 1080x1920 portrait target. The screen does not use Unity layout components.
 
-- calculator panel: `720x480`, anchored at `(0, -130)`;
-- title/result/input placeholder TMP font sizes: `24/40/40`;
-- input field is visually transparent: no box, no filled background, left-aligned text, italic grey placeholder `Enter an equation...`, and a separate thin light-grey underline below it;
-- result button preferred height: `96`;
-- input underline preferred height: `4`.
-- history adds up to six visible rows at `44` px each; the panel grows downward by the visible history height and the result button shifts by the same amount.
-- history clipping uses `RectMask2D` on `HistoryScroll/Viewport`; do not replace it with a transparent `Image + Mask`, because that can hide the TextMeshPro history text.
-- the history scrollbar is a prefab-owned uGUI `Scrollbar` under `HistoryScroll`; `CalculatorScreenView` toggles it only when history exceeds six visible rows and manually sets the handle size because the calculator does not use Unity layout components.
+- calculator panel, title, input, and `InputLine` stay at prefab-authored positions; only the panel background grows downward when history appears, keeping its top edge fixed so the header and input do not move;
+- when history appears, `CalculatorScreenView` shows `HistoryScroll`, extends the panel, and shifts the `RESULT` button downward by the visible history height plus `resultButtonHistoryOffset`;
+- `maxVisibleHistoryRows` defaults to `7` on `CalculatorScreenView`; row height is derived from `historyText` preferred line height;
+- input field is visually transparent: no box, no filled background, left-aligned text, italic grey placeholder `Enter an equation...`, and a separate thin underline below it;
+- input underline (`InputLine`) colors are prefab-serialized as `inputLineDefaultColor` and `inputLineActiveColor` on `CalculatorScreenView`;
+- history viewport uses `RectMask2D` for clipping; mouse wheel and drag scrolling are enabled only when the history scrollbar is visible (more than `maxVisibleHistoryRows` entries);
+- the history scrollbar is a prefab-owned uGUI `Scrollbar` under `HistoryScroll`; `CalculatorScreenView` toggles it when history exceeds `maxVisibleHistoryRows`, while `ScrollRect` drives handle size and scrolling after layout rebuild;
 
 ## Dependency Injection
 

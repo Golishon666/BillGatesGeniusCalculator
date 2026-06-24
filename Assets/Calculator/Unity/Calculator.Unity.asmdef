@@ -8,6 +8,7 @@
         "MessageBox",
         "UniTask",
         "Unity.TextMeshPro",
+        "Unity.InputSystem",
         "UnityEngine.UI",
         "VContainer"
     ],

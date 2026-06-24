@@ -75,6 +75,23 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
             Assert.That(repository.SavedState.CurrentInput, Is.EqualTo("10+20"));
         }
 
+        [Test]
+        public async Task ClearHistoryDebug_ClearsHistoryAndPersistsState()
+        {
+            var repository = new FakeStateRepository(new CalculatorState("1+1", new[] { "5+5=10", "2+2=4" }));
+            var view = new FakeCalculatorScreenView();
+            var presenter = CreatePresenter(view, repository, new FakeDialogService());
+            await presenter.InitializeAsync();
+
+            presenter.ClearHistoryDebug();
+            await UniTask.DelayFrame(1);
+
+            Assert.That(view.History, Is.Empty);
+            Assert.That(view.Input, Is.EqualTo("1+1"));
+            Assert.That(repository.SavedState.History, Is.Empty);
+            Assert.That(repository.SavedState.CurrentInput, Is.EqualTo("1+1"));
+        }
+
         private static CalculatorPresenter CreatePresenter(
             FakeCalculatorScreenView view,
             IStateRepository repository,

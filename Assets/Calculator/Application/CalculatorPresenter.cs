@@ -56,6 +56,18 @@ namespace BillGatesGeniusCalculator.Calculator.Application
             HandleResultAsync(input ?? string.Empty).Forget();
         }
 
+        public void ClearHistoryDebug()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            _state.History.Clear();
+            _view.SetHistory(_state.History);
+            SaveAsync().Forget();
+        }
+
         private async UniTaskVoid HandleResultAsync(string input)
         {
             if (!_isInitialized)

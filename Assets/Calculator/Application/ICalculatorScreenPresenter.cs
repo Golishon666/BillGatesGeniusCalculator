@@ -4,5 +4,6 @@ namespace BillGatesGeniusCalculator.Calculator.Application
     {
         void OnInputChanged(string input);
         void OnResultRequested(string input);
+        void ClearHistoryDebug();
     }
 }
