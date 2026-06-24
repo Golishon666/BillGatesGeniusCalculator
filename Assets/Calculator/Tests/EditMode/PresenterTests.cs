@@ -54,6 +54,8 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
             await UniTask.DelayFrame(2);
 
             Assert.That(dialog.ShowCount, Is.EqualTo(1));
+            Assert.That(view.HideCount, Is.EqualTo(1));
+            Assert.That(view.ShowCount, Is.EqualTo(1));
             Assert.That(view.Input, Is.EqualTo("5/5"));
             Assert.That(view.History, Is.EqualTo(new[] { "5/5=ERROR" }));
             Assert.That(repository.SavedState.CurrentInput, Is.EqualTo("5/5"));
@@ -91,9 +93,21 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
             public string Input { get; private set; }
             public List<string> History { get; } = new List<string>();
             public bool IsInteractable { get; private set; }
+            public int ShowCount { get; private set; }
+            public int HideCount { get; private set; }
 
             public void Initialize(ICalculatorScreenPresenter presenter, CalculatorScreenViewConfig config)
             {
+            }
+
+            public void Show()
+            {
+                ShowCount++;
+            }
+
+            public void Hide()
+            {
+                HideCount++;
             }
 
             public void SetInput(string input)

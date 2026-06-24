@@ -1,4 +1,4 @@
-using BillGatesGeniusCalculator.Calculator.Application;
+﻿using BillGatesGeniusCalculator.Calculator.Application;
 using BillGatesGeniusCalculator.Calculator.Domain;
 using BillGatesGeniusCalculator.Calculator.Infrastructure;
 using BillGatesGeniusCalculator.MessageBox;
@@ -23,8 +23,10 @@ namespace BillGatesGeniusCalculator.Calculator.Unity.Views
 
         protected override void Configure(IContainerBuilder builder)
         {
+            screenConfig.Operations ??= new CalculatorOperationsConfig();
             builder.RegisterInstance(appConfig);
             builder.RegisterInstance(screenConfig);
+            builder.RegisterInstance(screenConfig.Operations);
             builder.RegisterInstance(messageBoxConfig);
             builder.RegisterInstance(screenView).As<ICalculatorScreenView>();
             builder.RegisterInstance(messageBoxView).As<IMessageBoxView>();
@@ -36,3 +38,4 @@ namespace BillGatesGeniusCalculator.Calculator.Unity.Views
         }
     }
 }
+

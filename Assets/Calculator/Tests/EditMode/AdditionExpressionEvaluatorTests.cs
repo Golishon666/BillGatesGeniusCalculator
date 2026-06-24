@@ -1,4 +1,4 @@
-using BillGatesGeniusCalculator.Calculator.Domain;
+﻿using BillGatesGeniusCalculator.Calculator.Domain;
 using NUnit.Framework;
 
 namespace BillGatesGeniusCalculator.Calculator.Tests
@@ -33,6 +33,9 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
         [TestCase("5+")]
         [TestCase("5++5")]
         [TestCase("5 + 5")]
+        [TestCase("abc")]
+        [TestCase("5-5")]
+        [TestCase("5*5")]
         public void Evaluate_ReturnsError_ForInvalidExpression(string expression)
         {
             var result = _evaluator.Evaluate(expression);
@@ -47,5 +50,57 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
 
             Assert.That(result.IsSuccess, Is.False);
         }
+
+        [Test]
+        public void Evaluate_ReturnsConfiguredResult_WhenAdditionalOperationsAreEnabled()
+        {
+            var config = CreateOperationsConfig(addition: true, subtraction: true, multiplication: true, division: true);
+            var evaluator = new AdditionExpressionEvaluator(config);
+
+            var result = evaluator.Evaluate("10+6/2*3-4");
+
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.EqualTo(15));
+        }
+
+        [TestCase("5/0")]
+        [TestCase("-5+1")]
+        [TestCase("5/-1")]
+        [TestCase("5//1")]
+        public void Evaluate_ReturnsError_ForInvalidConfiguredOperationExpression(string expression)
+        {
+            var config = CreateOperationsConfig(addition: true, subtraction: true, multiplication: true, division: true);
+            var evaluator = new AdditionExpressionEvaluator(config);
+
+            var result = evaluator.Evaluate(expression);
+
+            Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test]
+        public void OperationsConfig_EnablesOperations_FromFlags()
+        {
+            var config = CreateOperationsConfig(addition: true, subtraction: false, multiplication: true, division: false);
+
+            Assert.That(config.IsEnabled('+'), Is.True);
+            Assert.That(config.IsEnabled('-'), Is.False);
+            Assert.That(config.IsEnabled('*'), Is.True);
+            Assert.That(config.IsEnabled('/'), Is.False);
+        }
+
+        private static CalculatorOperationsConfig CreateOperationsConfig(
+            bool addition,
+            bool subtraction,
+            bool multiplication,
+            bool division)
+        {
+            var config = new CalculatorOperationsConfig();
+            config.Addition = addition;
+            config.Subtraction = subtraction;
+            config.Multiplication = multiplication;
+            config.Division = division;
+            return config;
+        }
     }
 }
+

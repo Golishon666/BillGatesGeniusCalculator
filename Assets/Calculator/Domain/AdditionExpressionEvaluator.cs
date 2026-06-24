@@ -1,9 +1,22 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BillGatesGeniusCalculator.Calculator.Domain
 {
     public sealed class AdditionExpressionEvaluator : IExpressionEvaluator
     {
+        private readonly CalculatorOperationsConfig _operationsConfig;
+
+        public AdditionExpressionEvaluator()
+            : this(new CalculatorOperationsConfig())
+        {
+        }
+
+        public AdditionExpressionEvaluator(CalculatorOperationsConfig operationsConfig)
+        {
+            _operationsConfig = operationsConfig ?? new CalculatorOperationsConfig();
+        }
+
         public ExpressionEvaluation Evaluate(string expression)
         {
             if (string.IsNullOrEmpty(expression))
@@ -11,43 +24,124 @@ namespace BillGatesGeniusCalculator.Calculator.Domain
                 return ExpressionEvaluation.Error();
             }
 
-            for (var i = 0; i < expression.Length; i++)
+            var values = new List<long>();
+            var operations = new List<char>();
+            var expectNumber = true;
+
+            for (var index = 0; index < expression.Length; index++)
             {
-                var symbol = expression[i];
-                if (!char.IsDigit(symbol) && symbol != '+')
+                var symbol = expression[index];
+                if (char.IsDigit(symbol))
+                {
+                    var value = 0L;
+                    while (index < expression.Length && char.IsDigit(expression[index]))
+                    {
+                        try
+                        {
+                            checked
+                            {
+                                value = value * 10 + (expression[index] - '0');
+                            }
+                        }
+                        catch (OverflowException)
+                        {
+                            return ExpressionEvaluation.Error();
+                        }
+
+                        index++;
+                    }
+
+                    values.Add(value);
+                    index--;
+                    expectNumber = false;
+                    continue;
+                }
+
+                if (!CalculatorOperationsConfig.IsOperationCharacter(symbol) || !_operationsConfig.IsEnabled(symbol))
                 {
                     return ExpressionEvaluation.Error();
                 }
+
+                if (expectNumber)
+                {
+                    return ExpressionEvaluation.Error();
+                }
+
+                operations.Add(symbol);
+                expectNumber = true;
             }
 
-            var terms = expression.Split('+');
-            if (terms.Length < 2)
+            if (expectNumber || values.Count < 2 || operations.Count != values.Count - 1)
             {
                 return ExpressionEvaluation.Error();
             }
 
-            long sum = 0;
-            foreach (var term in terms)
+            try
             {
-                if (term.Length == 0 || !long.TryParse(term, out var value))
+                return ExpressionEvaluation.Success(EvaluateWithPrecedence(values, operations));
+            }
+            catch (OverflowException)
+            {
+                return ExpressionEvaluation.Error();
+            }
+            catch (DivideByZeroException)
+            {
+                return ExpressionEvaluation.Error();
+            }
+        }
+
+        private static long EvaluateWithPrecedence(IReadOnlyList<long> values, IReadOnlyList<char> operations)
+        {
+            var collapsedValues = new List<long>();
+            var collapsedOperations = new List<char>();
+            var current = values[0];
+
+            for (var index = 0; index < operations.Count; index++)
+            {
+                var operation = operations[index];
+                var nextValue = values[index + 1];
+
+                if (operation == '*' || operation == '/')
                 {
-                    return ExpressionEvaluation.Error();
+                    current = ApplyOperation(current, nextValue, operation);
+                    continue;
                 }
 
-                try
-                {
-                    checked
-                    {
-                        sum += value;
-                    }
-                }
-                catch (OverflowException)
-                {
-                    return ExpressionEvaluation.Error();
-                }
+                collapsedValues.Add(current);
+                collapsedOperations.Add(operation);
+                current = nextValue;
             }
 
-            return ExpressionEvaluation.Success(sum);
+            collapsedValues.Add(current);
+
+            var result = collapsedValues[0];
+            for (var index = 0; index < collapsedOperations.Count; index++)
+            {
+                result = ApplyOperation(result, collapsedValues[index + 1], collapsedOperations[index]);
+            }
+
+            return result;
+        }
+
+        private static long ApplyOperation(long left, long right, char operation)
+        {
+            checked
+            {
+                switch (operation)
+                {
+                    case '+':
+                        return left + right;
+                    case '-':
+                        return left - right;
+                    case '*':
+                        return left * right;
+                    case '/':
+                        return left / right;
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
         }
     }
 }
+

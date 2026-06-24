@@ -3,6 +3,7 @@
     "rootNamespace": "BillGatesGeniusCalculator.MessageBox",
     "references": [
         "UniTask",
+        "Unity.TextMeshPro",
         "UnityEngine.UI"
     ],
     "includePlatforms": [],

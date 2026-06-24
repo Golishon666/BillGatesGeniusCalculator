@@ -82,11 +82,13 @@ namespace BillGatesGeniusCalculator.Calculator.Application
             _view.SetInput(_state.CurrentInput);
             _view.SetHistory(_state.History);
             await _stateRepository.SaveAsync(_state);
+            _view.Hide();
             await _messageDialogService.ShowAsync(_config.ErrorDialogMessage, _config.ErrorDialogButtonText);
+            _view.Show();
             _state.CurrentInput = input;
             _view.SetInput(_state.CurrentInput);
-            await _stateRepository.SaveAsync(_state);
             _view.SetInteractable(true);
+            await _stateRepository.SaveAsync(_state);
         }
 
         private async UniTaskVoid SaveAsync()

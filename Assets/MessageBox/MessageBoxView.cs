@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,11 +7,16 @@ namespace BillGatesGeniusCalculator.MessageBox
     public sealed class MessageBoxView : MonoBehaviour, IMessageBoxView
     {
         [SerializeField] private GameObject root;
-        [SerializeField] private Text messageText;
+        [SerializeField] private TextMeshProUGUI messageText;
         [SerializeField] private Button confirmButton;
-        [SerializeField] private Text confirmButtonLabel;
+        [SerializeField] private TextMeshProUGUI confirmButtonLabel;
 
         private IMessageBoxPresenter _presenter;
+
+        private void Awake()
+        {
+            Hide();
+        }
 
         public void Initialize(IMessageBoxPresenter presenter, MessageBoxViewConfig config)
         {
