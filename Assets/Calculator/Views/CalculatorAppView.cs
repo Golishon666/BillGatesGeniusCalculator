@@ -29,14 +29,16 @@ namespace BillGatesGeniusCalculator.Calculator.Unity.Views
 
         protected override void Configure(IContainerBuilder builder)
         {
-            screenConfig.Operations ??= ScriptableObject.CreateInstance<CalculatorOperationsConfig>();
+            ICalculatorOperations operations = screenConfig.Operations != null
+                ? screenConfig.Operations
+                : CalculatorOperations.AdditionOnly;
             historyDebugView ??= screenView != null
                 ? screenView.GetComponent<CalculatorHistoryDebugView>()
                 : null;
 
             builder.RegisterInstance(appConfig);
             builder.RegisterInstance(screenConfig);
-            builder.RegisterInstance(screenConfig.Operations).As<ICalculatorOperations>();
+            builder.RegisterInstance(operations).As<ICalculatorOperations>();
             builder.RegisterInstance(screenView).As<ICalculatorScreenView>();
             builder.RegisterInstance(historyDebugView);
             builder.Register<AdditionExpressionEvaluator>(Lifetime.Singleton).As<IExpressionEvaluator>();
