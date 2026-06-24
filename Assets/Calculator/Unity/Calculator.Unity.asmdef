@@ -1,0 +1,22 @@
+{
+    "name": "Calculator.Unity",
+    "rootNamespace": "BillGatesGeniusCalculator.Calculator.Unity",
+    "references": [
+        "Calculator.Application",
+        "Calculator.Domain",
+        "Calculator.Infrastructure",
+        "MessageBox",
+        "UniTask",
+        "UnityEngine.UI",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

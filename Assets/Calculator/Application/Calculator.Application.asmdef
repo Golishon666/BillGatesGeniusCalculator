@@ -1,0 +1,18 @@
+{
+    "name": "Calculator.Application",
+    "rootNamespace": "BillGatesGeniusCalculator.Calculator.Application",
+    "references": [
+        "Calculator.Domain",
+        "MessageBox",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
