@@ -1,5 +1,6 @@
-﻿using BillGatesGeniusCalculator.Calculator.Domain;
+using BillGatesGeniusCalculator.Calculator.Domain;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace BillGatesGeniusCalculator.Calculator.Tests
 {
@@ -94,7 +95,7 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
             bool multiplication,
             bool division)
         {
-            var config = new CalculatorOperationsConfig();
+            var config = ScriptableObject.CreateInstance<CalculatorOperationsConfig>();
             config.Addition = addition;
             config.Subtraction = subtraction;
             config.Multiplication = multiplication;
@@ -103,4 +104,3 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
         }
     }
 }
-

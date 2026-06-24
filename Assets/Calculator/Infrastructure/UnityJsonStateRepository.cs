@@ -44,8 +44,9 @@ namespace BillGatesGeniusCalculator.Calculator.Infrastructure
 
                     return new CalculatorState(dto.CurrentInput, dto.History ?? new List<string>());
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    Debug.LogError($"Failed to load calculator state from '{_filePath}': {exception}");
                     return new CalculatorState();
                 }
             });
@@ -61,13 +62,20 @@ namespace BillGatesGeniusCalculator.Calculator.Infrastructure
 
             await UniTask.RunOnThreadPool(() =>
             {
-                var directory = Path.GetDirectoryName(_filePath);
-                if (!string.IsNullOrEmpty(directory))
+                try
                 {
-                    Directory.CreateDirectory(directory);
-                }
+                    var directory = Path.GetDirectoryName(_filePath);
+                    if (!string.IsNullOrEmpty(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
 
-                File.WriteAllText(_filePath, JsonUtility.ToJson(snapshot, true));
+                    File.WriteAllText(_filePath, JsonUtility.ToJson(snapshot, true));
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogError($"Failed to save calculator state to '{_filePath}': {exception}");
+                }
             });
         }
 

@@ -11,7 +11,7 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
         public void OnlyViewClassesInProjectInheritMonoBehaviour()
         {
             var offenders = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => assembly.GetName().Name is "Calculator.Unity" or "MessageBox")
+                .Where(assembly => assembly.GetName().Name is "Calculator")
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => typeof(MonoBehaviour).IsAssignableFrom(type))
@@ -26,7 +26,7 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
         public void EveryViewMonoBehaviourHasInitializeMethod()
         {
             var offenders = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => assembly.GetName().Name is "Calculator.Unity" or "MessageBox")
+                .Where(assembly => assembly.GetName().Name is "Calculator")
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => typeof(MonoBehaviour).IsAssignableFrom(type))

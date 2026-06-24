@@ -1,5 +1,4 @@
 using BillGatesGeniusCalculator.Calculator.Domain;
-using BillGatesGeniusCalculator.MessageBox;
 using Cysharp.Threading.Tasks;
 
 namespace BillGatesGeniusCalculator.Calculator.Application
@@ -16,6 +15,7 @@ namespace BillGatesGeniusCalculator.Calculator.Application
 
         private CalculatorState _state = new CalculatorState();
         private bool _isInitialized;
+        private bool _isHandlingResult;
 
         public CalculatorPresenter(
             ICalculatorScreenView view,
@@ -48,11 +48,16 @@ namespace BillGatesGeniusCalculator.Calculator.Application
             }
 
             _state.CurrentInput = input ?? string.Empty;
-            SaveAsync().Forget();
+            PersistState();
         }
 
         public void OnResultRequested(string input)
         {
+            if (_isHandlingResult)
+            {
+                return;
+            }
+
             HandleResultAsync(input ?? string.Empty).Forget();
         }
 
@@ -65,45 +70,80 @@ namespace BillGatesGeniusCalculator.Calculator.Application
 
             _state.History.Clear();
             _view.SetHistory(_state.History);
-            SaveAsync().Forget();
+            PersistState();
         }
 
-        private async UniTaskVoid HandleResultAsync(string input)
+        private async UniTask HandleResultAsync(string input)
         {
-            if (!_isInitialized)
+            if (!_isInitialized || _isHandlingResult)
             {
                 return;
             }
 
+            _isHandlingResult = true;
             _view.SetInteractable(false);
-            var evaluation = _evaluator.Evaluate(input);
+            var shouldRestoreInput = false;
+            var isViewHidden = false;
 
-            if (evaluation.IsSuccess)
+            try
             {
-                _state.History.Insert(0, $"{input}={evaluation.Value}");
+                var evaluation = _evaluator.Evaluate(input);
+                if (evaluation.IsSuccess)
+                {
+                    _state.History.Insert(0, $"{input}={evaluation.Value}");
+                    _state.CurrentInput = string.Empty;
+                    _view.SetInput(_state.CurrentInput);
+                    _view.SetHistory(_state.History);
+                    await _stateRepository.SaveAsync(_state);
+                    return;
+                }
+
+                _state.History.Insert(0, $"{input}={ErrorToken}");
                 _state.CurrentInput = string.Empty;
                 _view.SetInput(_state.CurrentInput);
                 _view.SetHistory(_state.History);
+                shouldRestoreInput = true;
                 await _stateRepository.SaveAsync(_state);
-                _view.SetInteractable(true);
-                return;
-            }
 
-            _state.History.Insert(0, $"{input}={ErrorToken}");
-            _state.CurrentInput = string.Empty;
-            _view.SetInput(_state.CurrentInput);
-            _view.SetHistory(_state.History);
-            await _stateRepository.SaveAsync(_state);
-            _view.Hide();
-            await _messageDialogService.ShowAsync(_config.ErrorDialogMessage, _config.ErrorDialogButtonText);
-            _view.Show();
-            _state.CurrentInput = input;
-            _view.SetInput(_state.CurrentInput);
-            _view.SetInteractable(true);
-            await _stateRepository.SaveAsync(_state);
+                _view.Hide();
+                isViewHidden = true;
+                await _messageDialogService.ShowAsync(_config.ErrorDialogMessage, _config.ErrorDialogButtonText);
+            }
+            finally
+            {
+                try
+                {
+                    if (shouldRestoreInput)
+                    {
+                        if (isViewHidden)
+                        {
+                            _view.Show();
+                        }
+
+                        _state.CurrentInput = input;
+                        _view.SetInput(_state.CurrentInput);
+                    }
+
+                    _view.SetInteractable(true);
+
+                    if (shouldRestoreInput)
+                    {
+                        await _stateRepository.SaveAsync(_state);
+                    }
+                }
+                finally
+                {
+                    _isHandlingResult = false;
+                }
+            }
         }
 
-        private async UniTaskVoid SaveAsync()
+        private void PersistState()
+        {
+            SaveStateAsync().Forget();
+        }
+
+        private async UniTask SaveStateAsync()
         {
             await _stateRepository.SaveAsync(_state);
         }

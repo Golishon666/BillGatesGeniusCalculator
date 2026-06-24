@@ -1,9 +1,11 @@
-﻿using System;
+using UnityEngine;
 
 namespace BillGatesGeniusCalculator.Calculator.Domain
 {
-    [Serializable]
-    public sealed class CalculatorOperationsConfig
+    [CreateAssetMenu(
+        fileName = "CalculatorOperationsConfig",
+        menuName = "Bill Gates Genius Calculator/Operations Config")]
+    public sealed class CalculatorOperationsConfig : ScriptableObject, ICalculatorOperations
     {
         public bool Addition = true;
         public bool Subtraction;

@@ -1,8 +1,11 @@
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BillGatesGeniusCalculator.Calculator.Domain;
 using BillGatesGeniusCalculator.Calculator.Infrastructure;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace BillGatesGeniusCalculator.Calculator.Tests
 {
@@ -33,6 +36,7 @@ namespace BillGatesGeniusCalculator.Calculator.Tests
             var path = Path.Combine(Path.GetTempPath(), "calculator-state-corrupted-test.json");
             File.WriteAllText(path, "not json");
             var repository = new UnityJsonStateRepository(path);
+            LogAssert.Expect(LogType.Error, new Regex("Failed to load calculator state"));
 
             var loaded = await repository.LoadAsync();
 

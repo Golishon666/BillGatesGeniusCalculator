@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BillGatesGeniusCalculator.Calculator.Application;
 using BillGatesGeniusCalculator.Calculator.Domain;
-using BillGatesGeniusCalculator.MessageBox;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 

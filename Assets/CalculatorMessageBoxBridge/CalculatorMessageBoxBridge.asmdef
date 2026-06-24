@@ -1,10 +1,10 @@
 {
-    "name": "MessageBox",
-    "rootNamespace": "BillGatesGeniusCalculator.MessageBox",
+    "name": "CalculatorMessageBoxBridge",
+    "rootNamespace": "BillGatesGeniusCalculator.CalculatorMessageBoxBridge",
     "references": [
+        "Calculator",
+        "MessageBox",
         "UniTask",
-        "Unity.TextMeshPro",
-        "UnityEngine.UI",
         "VContainer"
     ],
     "includePlatforms": [],

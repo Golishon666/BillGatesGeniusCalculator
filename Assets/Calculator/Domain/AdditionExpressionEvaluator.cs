@@ -1,20 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BillGatesGeniusCalculator.Calculator.Domain
 {
     public sealed class AdditionExpressionEvaluator : IExpressionEvaluator
     {
-        private readonly CalculatorOperationsConfig _operationsConfig;
+        private readonly ICalculatorOperations _operations;
 
         public AdditionExpressionEvaluator()
-            : this(new CalculatorOperationsConfig())
+            : this(CalculatorOperations.AdditionOnly)
         {
         }
 
-        public AdditionExpressionEvaluator(CalculatorOperationsConfig operationsConfig)
+        public AdditionExpressionEvaluator(ICalculatorOperations operations)
         {
-            _operationsConfig = operationsConfig ?? new CalculatorOperationsConfig();
+            _operations = operations ?? CalculatorOperations.AdditionOnly;
         }
 
         public ExpressionEvaluation Evaluate(string expression)
@@ -57,7 +57,7 @@ namespace BillGatesGeniusCalculator.Calculator.Domain
                     continue;
                 }
 
-                if (!CalculatorOperationsConfig.IsOperationCharacter(symbol) || !_operationsConfig.IsEnabled(symbol))
+                if (!CalculatorOperations.IsOperationCharacter(symbol) || !_operations.IsEnabled(symbol))
                 {
                     return ExpressionEvaluation.Error();
                 }
@@ -144,4 +144,3 @@ namespace BillGatesGeniusCalculator.Calculator.Domain
         }
     }
 }
-

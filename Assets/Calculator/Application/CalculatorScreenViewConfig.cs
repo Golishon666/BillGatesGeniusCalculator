@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BillGatesGeniusCalculator.Calculator.Domain;
 
 namespace BillGatesGeniusCalculator.Calculator.Application
@@ -11,8 +11,6 @@ namespace BillGatesGeniusCalculator.Calculator.Application
         public string ResultButtonText = "RESULT";
         public string ErrorDialogMessage = "Please check the expression\nyou just entered";
         public string ErrorDialogButtonText = "GOT IT";
-        public CalculatorOperationsConfig Operations = new CalculatorOperationsConfig();
+        public CalculatorOperationsConfig Operations;
     }
 }
-
-

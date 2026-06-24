@@ -2,8 +2,8 @@ using Cysharp.Threading.Tasks;
 
 namespace BillGatesGeniusCalculator.Calculator.Application
 {
-    public interface ICalculatorPresenter : ICalculatorScreenPresenter
+    public interface IMessageDialogService
     {
-        UniTask InitializeAsync();
+        UniTask ShowAsync(string message, string buttonText);
     }
 }

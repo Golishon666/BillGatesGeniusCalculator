@@ -2,11 +2,7 @@
     "name": "Calculator.Tests",
     "rootNamespace": "BillGatesGeniusCalculator.Calculator.Tests",
     "references": [
-        "Calculator.Application",
-        "Calculator.Domain",
-        "Calculator.Infrastructure",
-        "Calculator.Unity",
-        "MessageBox",
+        "Calculator",
         "UniTask",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

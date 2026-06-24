@@ -823,6 +823,7 @@ GameObject:
   - component: {fileID: 8379632621525909402}
   - component: {fileID: 4954092849510843312}
   - component: {fileID: 8679288104157960560}
+  - component: {fileID: 7123456789012345678}
   m_Layer: 0
   m_Name: CalculatorScreen
   m_TagString: Untagged
@@ -903,7 +904,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b0c26b4946e10e4b8e0f485f4f399ba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Calculator.Unity::BillGatesGeniusCalculator.Calculator.Unity.Views.CalculatorScreenView
+  m_EditorClassIdentifier: Calculator::BillGatesGeniusCalculator.Calculator.Unity.Views.CalculatorScreenView
   titleText: {fileID: 8913303002690055280}
   inputField: {fileID: 1548455967825261259}
   placeholderText: {fileID: 1536182268271672681}
@@ -919,6 +920,19 @@ MonoBehaviour:
   inputLineDefaultColor: {r: 0.8039216, g: 0.8039216, b: 0.8039216, a: 1}
   inputLineActiveColor: {r: 0.29803923, g: 0.68235296, b: 0.93333334, a: 1}
   resultButtonHistoryOffset: 0
+--- !u!114 &7123456789012345678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119017655820056834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4d8e1f92a3b4c5d6e7f8091a2b3c4d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Calculator::BillGatesGeniusCalculator.Calculator.Unity.Views.CalculatorHistoryDebugView
+  inputField: {fileID: 1548455967825261259}
 --- !u!1 &6154946269780585498
 GameObject:
   m_ObjectHideFlags: 0
